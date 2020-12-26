@@ -1,0 +1,159 @@
+# Translations template for PROJECT.
+# Copyright (C) 2020 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2020.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2020-12-23 16:32-0500\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.9.0\n"
+
+#: app.py:68
+msgid "Sars-cov-2"
+msgstr ""
+
+#: app.py:69
+msgid "influenza"
+msgstr ""
+
+#: app.py:70
+msgid "ebola"
+msgstr ""
+
+#: app.py:79
+msgid "Small-world (watts-strogatz)"
+msgstr ""
+
+#: app.py:80
+msgid "Small-world (connected watts-strogatz)"
+msgstr ""
+
+#: app.py:135
+msgid "Application to visualise epidemiologic simulation"
+msgstr ""
+
+#: app.py:145
+msgid "Learn more about covid"
+msgstr ""
+
+#: app.py:170
+msgid "Parameters of the model"
+msgstr ""
+
+#: app.py:176
+msgid "Selection of the model for generating the space"
+msgstr ""
+
+#: app.py:210
+msgid "Connectivity parameter (x10)"
+msgstr ""
+
+#: app.py:248
+msgid "Connectivity-per-node"
+msgstr ""
+
+#: app.py:286
+msgid "Size of the network"
+msgstr ""
+
+#: app.py:321
+msgid "Number of walker in the network"
+msgstr ""
+
+#: app.py:347 app.py:381
+msgid "Selection of the range of longitude"
+msgstr ""
+
+#: app.py:357
+msgid "Number of repetition (for statistical analysis)"
+msgstr ""
+
+#: app.py:410
+msgid "Parameters of the disease"
+msgstr ""
+
+#: app.py:415
+msgid "Select presets based on a specific disease"
+msgstr ""
+
+#: app.py:451
+msgid "Infectiosity"
+msgstr ""
+
+#: app.py:490
+msgid "Mortality"
+msgstr ""
+
+#: app.py:529
+msgid "Number of person sick at iteration 0"
+msgstr ""
+
+#: app.py:567
+msgid "Duration of the infection"
+msgstr ""
+
+#: app.py:626
+msgid "The application is running!"
+msgstr ""
+
+#: app.py:638
+msgid ""
+"This application allows the user to quickly see the results of simulation"
+" of epidemiology on small-world networks"
+msgstr ""
+
+#: app.py:639
+msgid ""
+"This application provides users the ability to alter different parameter "
+"and visualise the impact on those on the propagation of a virus "
+"throughout a community"
+msgstr ""
+
+#: modals.py:58
+msgid ""
+"This dropdown menu allows for the selection of  a model to generate the "
+"space in which walker                     will be set free. This model "
+"can take the form of a simple cartesian grid or can be made from"
+"                     a more complex model, for example a small-world "
+"network"
+msgstr ""
+
+#: modals.py:69
+msgid ""
+"This parameter controls the number of connection associated to each node."
+" It has been normalize on a scale from 1 to 10,                     with "
+"the formula C=N/100*connectivity. By default those connection are made "
+"between neighboring nodes."
+msgstr ""
+
+#: modals.py:158
+msgid ""
+"                     The probability of a person getting infected when "
+"passing by a node with another infected person on it.                    "
+"For technical reason, it is scaled from 1 to 10 instead of 0 to 1."
+msgstr ""
+
+#: modals.py:169
+msgid ""
+"The number of sick person at the first iteration. For a small population "
+"density, this could affect greatly the outcome. However,"
+"                     for a bigger population density, this parameter "
+"should not affect too much the outcome of the epidemic."
+msgstr ""
+
+#: modals.py:178
+msgid ""
+"The lifetime of the disease. Once a person is infected, it will remain "
+"contagious until                     his lifetime is over, and it will "
+"then either recover (and be immune to the disease) or die."
+msgstr ""
+
