@@ -9,10 +9,10 @@ import dash
 
 import dash_core_components as dcc
 import dash_html_components as html
-
+import pandas as pd
 
 from dash.dependencies import Input, Output
-
+import dash_table
 from flask_babel import _ ,Babel
 from flask import session, redirect, url_for
 
@@ -83,6 +83,12 @@ model_options = [
 
 
    ]
+
+
+params_table = [
+    'infectiosity', 'movements', 'mortality',
+]
+
 
 #======================================================================================
 
@@ -689,7 +695,50 @@ def build_advanced_filtering():
         value=[]
     ),
                          
+                      
+
+                      
+                        
+   html.Div( #contingency measures
+                                    [
+                                         html.Div(
+                            children=[
+                                html.H5(
+                                    [
+                                        _("Vary parameter based on age"),
+
+                                        html.Img(
+                                            id="show-age-modal",
+                                            src="assets/question-circle-solid.svg",
+                                            n_clicks=0,
+                                            className="info-icon",
+                                        ),
+                                    ],
+                                      className="container_title",
+                                    style={"margin-bottom" : "1em" , "margin-top" : "2em"}
+                                )],
+                            id="age-div"),
                                         
+
+                                                         dash_table.DataTable(
+        id='table-editing-simple',
+        columns=(
+            [{'id': 'Age', 'name': 'Age'}] +
+            [{'id': p, 'name': p} for p in params_table]
+        ),
+        data=[
+            dict(Age=i, **{param: 0 for param in params_table})
+            for i in ["0-24","25-50","50+"]
+        ],
+        editable=True
+    ),
+    dcc.Graph(id='table-editing-simple-output')
+                         
+     
+                                      ]
+
+
+                                ),  #End of contingency measures                                   
                         
                         
                         
@@ -866,6 +915,26 @@ for id in ["model", "connectivity", "connectivity_node", "size", "n_walker","mor
 
 
 
+@app.callback(
+    Output('table-editing-simple-output', 'figure'),
+    Input('table-editing-simple', 'data'),
+    Input('table-editing-simple', 'columns'))
+def display_output(rows, columns):
+    df = pd.DataFrame(rows, columns=[c['name'] for c in columns])
+    return {
+        'data': [{
+            'type': 'parcoords',
+            'dimensions': [{
+                'label': col['name'],
+                'values': df[col['id']]
+            } for col in columns],
+            
+            
+        }]
+    }
+
+
+#=================================================================================
 
 
 # Selectors -> viz chart (95% CI)

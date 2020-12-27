@@ -39,3 +39,7 @@ plotly == 4.4.1
 #to run server :
 gunicorn>=20.0.4
 Werkzeug>=0.16.0
+
+
+pandas
+dash_table
