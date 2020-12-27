@@ -90,6 +90,11 @@ params_table = [
 ]
 
 
+Age_groups=["0-24","25-50","50+"]
+
+Age_groups_dict={}
+for (ex,p) in enumerate(params_table) :
+    Age_groups_dict.update({p : ex})
 #======================================================================================
 
 
@@ -719,7 +724,7 @@ def build_advanced_filtering():
                                 )],
                             id="age-div"),
                                         
-
+                 
                                                          dash_table.DataTable(
         id='table-editing-simple',
         columns=(
@@ -728,11 +733,11 @@ def build_advanced_filtering():
         ),
         data=[
             dict(Age=i, **{param: 0 for param in params_table})
-            for i in ["0-24","25-50","50+"]
+            for i in Age_groups
         ],
         editable=True
     ),
-    dcc.Graph(id='table-editing-simple-output')
+    #dcc.Graph(id='table-editing-simple-output')
                          
      
                                       ]
@@ -914,25 +919,27 @@ for id in ["model", "connectivity", "connectivity_node", "size", "n_walker","mor
 #=========================================================================
 
 
-
+"""
 @app.callback(
     Output('table-editing-simple-output', 'figure'),
     Input('table-editing-simple', 'data'),
     Input('table-editing-simple', 'columns'))
 def display_output(rows, columns):
-    df = pd.DataFrame(rows, columns=[c['name'] for c in columns])
+   
+    df = pd.DataFrame(rows, columns=[c for c in params_table])
+    colors=["red","blue","green"]
     return {
         'data': [{
             'type': 'parcoords',
             'dimensions': [{
-                'label': col['name'],
-                'values': df[col['id']]
-            } for col in columns],
-            
-            
+                'label': col,
+                'values': df[col],
+                'line' : {'name' : Age_groups[Age_groups_dict[col]],
+                'color' : colors[Age_groups_dict[col]]}
+            } for col in params_table]
         }]
     }
-
+"""
 
 #=================================================================================
 
