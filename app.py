@@ -36,6 +36,7 @@ from modals import modals_language
 external_stylesheets = [
                         'https://use.fontawesome.com/releases/v5.8.1/css/all.css',
                         'https://wet-boew.github.io/themes-dist/GCWeb/css/theme.min.css',
+                        'https://codepen.io/chriddyp/pen/bWLwgP.css',
                         'https://wet-boew.github.io/themes-dist/GCWeb/wet-boew/css/noscript.min.css']  # Link to external CSS
 
 external_scripts = [
@@ -666,6 +667,122 @@ def build_filtering():
     ])
 
 
+
+
+# This application builds the layout for the graph
+def build_advanced_filtering():
+    return html.Div([
+                html.Details(
+                    
+                    html.Div([
+                        
+                           html.H3(_("This panel let you control advanced features. Those features are experimental and I cannot garantee the results")),
+                        
+                        
+                        
+                         dcc.Checklist(
+        options=[
+            {'label': _("     Activate advanced features"), 'value': 'True'},
+           
+        ],
+        id="advanced_feature_switch",
+        value=[]
+    ),
+                         
+                                        
+                        
+                        
+                        
+   html.Div( #contingency measures
+                                    [
+                                         html.Div(
+                            children=[
+                                html.H5(
+                                    [
+                                        _("Apply contingency measures"),
+
+                                        html.Img(
+                                            id="show-contingency-modal",
+                                            src="assets/question-circle-solid.svg",
+                                            n_clicks=0,
+                                            className="info-icon",
+                                        ),
+                                    ],
+                                      className="container_title",
+                                    style={"margin-bottom" : "1em" , "margin-top" : "2em"}
+                                )],
+                            id="contingency-div"),
+                                        
+
+                                                      dcc.Checklist(
+                                                          
+        options=[
+            {'label': _("Confine sick population"), 'value': 'confine'},
+            {'label': _("Restrict movement"), 'value': 'advanced'},
+            {'label': _("Mask mandate and other sanitary measures"), 'value': 'masks'},
+            {'label': _("Close gathering spots"), 'value': 'lockdown'},
+           
+        ],
+        id="advanced_feature",
+        value=[],
+        inputStyle={"margin-right": "30px"}
+    ),
+                                        html.H5(
+                                            "", style={"margin-top": "5px"},
+                                             className="one-half column"
+                                        )]
+
+
+                                ),  #End of contingency measures
+                        
+                        
+   
+     html.Div( #proportion of population
+              
+                                    [
+                                           html.Div(
+                            children=[
+                                html.H4(
+                                    [
+                                        _("Population adherence to sanitary measures ( %) "),
+                                        html.Img(
+                                            id="show-adherence-modal",
+                                            src="assets/question-circle-solid.svg",
+                                            n_clicks=0,
+                                            className="info-icon",
+                                        ),
+                                    ],
+                                     className="container_title",
+                                    style={"margin_bottom" : "5px", "margin-top" : "2em"}
+                                )],
+                            id="adherence-div"),
+
+                                       dcc.Slider(
+                                            id="adherence-parameter",
+
+                                            value=50,
+
+                                            min=0,
+                                            max=100,
+                                            marks=dict([(i,str(i)) for i in range(0,110,10)]),
+                                            step=None,
+                                        )
+                                       ]
+
+
+                                ), # end of adherence parameter
+   
+   
+                        
+                        ])
+                    
+                    )
+            ],
+         className="pretty_container")
+
+
+
+
 # This application builds the layout for the graph
 def build_stats():
     return html.Div([
@@ -716,6 +833,7 @@ app.layout = html.Div(
 
                 build_header(),
                 build_filtering(),
+                build_advanced_filtering(),
                 build_stats(),
             ],
             id="mainContainer",
@@ -731,7 +849,7 @@ app.layout = html.Div(
 
 #============================================================================
  # Create show/hide callbacks for each info modal
-for id in ["model", "connectivity", "connectivity_node", "size", "n_walker","mortality","n_repetition","preset", "infectiosity", "n_sick","duree"]:
+for id in ["model", "connectivity", "connectivity_node", "size", "n_walker","mortality","n_repetition","preset", "infectiosity", "n_sick","duree","adherence","contingency"]:
 
     @app.callback(
         [Output(f"{id}-modal", "style"), Output(f"{id}-div", "style")],

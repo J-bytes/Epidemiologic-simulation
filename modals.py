@@ -168,6 +168,37 @@ def modals_language() :
                             ),
                         ),
                         build_modal_info_overlay(
+                            "contingency",
+                            "top",
+                            _(
+
+                    "The Construction Date panel displays a histogram of the construction \
+                    date of each tower in the dataset.  The dark gray bars represent the set of \
+                    towers in the current selection, while the light gray bars underneath \
+                    represent all towers in the dataset. "
+
+                            ),
+                                
+                                
+                        ),
+                            
+                              build_modal_info_overlay(
+                            "adherence",
+                            "top",
+                            _(
+
+                    "The Construction Date panel displays a histogram of the construction \
+                    date of each tower in the dataset.  The dark gray bars represent the set of \
+                    towers in the current selection, while the light gray bars underneath \
+                    represent all towers in the dataset. "
+
+                            ),
+                                
+                                
+                        ),
+                                  
+                                  
+                                    build_modal_info_overlay(
                             "created",
                             "top",
                             _(
@@ -178,7 +209,12 @@ def modals_language() :
                     represent all towers in the dataset. "
 
                             ),
-                        )])
+                                
+                                
+                        )
+                            
+                            
+                            ])
 
 
         return modals

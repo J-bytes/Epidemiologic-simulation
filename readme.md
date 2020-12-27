@@ -17,7 +17,7 @@ Le coeur de la visualisation est contenu dans app.py, alors que la simulation en
 
 Ce code utilise les modules Dash, plotly et flask pour générer un serveur local et permettre ainsi de créer une page html qui prends en entrée les choix de l'utilisateur et retourne les résultats de la simulation épidémiologique
 
-### The babel module
+### Le module babel
 
 Le module babel peut être lié avec l'application Flask pour traduire les messages contenus dans l'application. Toutefois, dù à certaines limitations, cette fonctionnalité n'est pas encore complètement fonctionnel (il suffirait d'utiliser l'application Alouette comme modèle pour créer un appel à la traduction). Par manque de temps, cette fonctionnalité ne fut pas encore implémenté.
 
@@ -64,7 +64,21 @@ Le fichier modals.py contient la fonction modals_language qui permet de retourne
 
   - [Plotly](https://plotly.com/) - Plotly est un puissant moteur graphique disponible sur python permettant une multitude de type de graphique différents. Plus facile à coder qu'en HTML pure et permettant d'être intégrer en python, celui-ci se limite toutefois légèrement sur le type de fonctionnalité disponible (une version payante "entreprise" est disponible)
 
-   -[Flask]( https://flask.palletsprojects.com/en/1.1.x/) - Flask est utilisé en arrière plan pour générer la page HTML à partir du code python en passant par des templates jinja. À moins de vouloir lancer un serveur ou d'avoir des préoccupations au niveau de la sécurité, peu à pas de connaissance de Flask ne sont requises pour modifier cette application.
+  - [Flask]( https://flask.palletsprojects.com/en/1.1.x/) - Flask est utilisé en arrière plan pour générer la page HTML à partir du code python en passant par des templates jinja. À moins de vouloir lancer un serveur ou d'avoir des préoccupations au niveau de la sécurité, peu à pas de connaissance de Flask ne sont requises pour modifier cette application.
 
 
 ## Étapes futures
+
+
+Bien que cette application soit fonctionnel, celle-cci n'en est qu'à son premier jet et plusieurs idées, corrections et autres ne purent être implémentés encore par manque de temps.
+
+
+ - Remplacer chaque phrases qui doit être traduite (emballé par la fonction _() ) par un identifiant pour permettre d'interactivement remplacé ces phrases par une version traduite. Cela requiert aussi l'implémentation d'une fonction qui prends comme callback_input la langue, et comme callback_output chacune de ces phrases.
+
+ - Ajouter d'autre types d'algorithmes de graphes
+
+ - Ajouter des paramètres plus complexe (population qui varie selon l'âge, des personnes asymptomatiques, des mesures de confinement, etc)
+
+ - Ajouter une animation démontrant comment les marcheurs se promène sur le réseau ( animation plus petite générée d'avance? (gif))
+
+ - Implementing graph visualisation through dash-cytoscope
