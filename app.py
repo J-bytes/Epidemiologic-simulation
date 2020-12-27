@@ -79,7 +79,8 @@ model_options = [
 
     {'label': _('Small-world (watts-strogatz)'), 'value': "watts"},
     {'label': _('Small-world (connected watts-strogatz)'), 'value':  "connected-watts"},
-    #{'label': _('grid'), 'value':    grid_graph},
+    {'label': _('2D Grid'), 'value':    "grid"},
+    {'label': _('Power Law'), 'value':    "power_law"},
 
 
    ]
@@ -978,17 +979,19 @@ def make_viz_chart(model,P,C,N,disease,P_infection,P_mortality,n_sick_original,M
     P_infection/=10
     P_mortality/=10
 
-    model_function = nx.connected_watts_strogatz_graph # default option to fall-back
-
+  
+   
     if model=="watts" :
-        model_function=nx.watts_strogatz_graph
+    
+        maps=nx.to_dict_of_lists(nx.Graph(nx.watts_strogatz_graph(N,C,P)))
 
     elif model=="grid" :
-        pass
+        maps=nx.to_dict_of_lists(nx.Graph(nx.grid_2d_graph(np.sqrt(N),np.sqrt(N))))
 
-
-    #model=="connected-watts" :
-
+    elif model=="power_law" :
+        maps=nx.to_dict_of_lists(nx.Graph(nx.powerlaw_cluster_graph(N,C,P)))
+    else :
+        maps=nx.to_dict_of_lists(nx.connected_watts_strogatz_graph(nx.powerlaw_cluster_graph(N,C,P)))
 
 
 
@@ -999,7 +1002,7 @@ def make_viz_chart(model,P,C,N,disease,P_infection,P_mortality,n_sick_original,M
 
 
 
-    maps=nx.to_dict_of_lists(nx.Graph(model_function(N,C,P)))
+    
 
     liste_sick,liste_health,liste_dead=np.zeros((repetition,max_iter)),np.zeros((repetition,max_iter)),np.zeros((repetition,max_iter))
 
