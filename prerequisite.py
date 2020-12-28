@@ -8,7 +8,7 @@ import numpy as np
 import networkx as nx
 class personne:
 
-    def __init__(self, x, lifespan,number,P_infection,P_mortality,status="healthy"):
+    def __init__(self, x, lifespan,number,P_infection,P_mortality,status="healthy",age="24-50",movements=1,advanced_feature=[]):
         """
         This function defines the property of the object personne such as position(x), etc.
 
@@ -39,7 +39,20 @@ class personne:
         self.P_mortality = P_mortality 
         self.lifespan=lifespan
         self.infected_by=0
-    
+        self.age=age
+        self.P_movements=movements
+        
+        
+        self.advanced_feature=advanced_feature
+        
+        if 'restrict' in advanced_feature :
+            self.P_movements-=0.75*self.P_movements
+        
+        if 'masks' in advanced_feature :
+            self.P_infection-=0.6*self.P_infection
+            
+            
+            
     def change_status(self, s):
         self.status = s
 
@@ -67,13 +80,14 @@ class personne:
 
         """
         
-        if  self.get_status != "dead" and   self.get_status != "immune":
+        r=np.random.random()
+        if  self.get_status != "dead" and   self.get_status != "immune" and r<self.P_movements:
            
             connection=maps[self.x]
             a=np.random.randint(0,len(connection))
            
             
-            if self.get_status=='sick' :
+            if self.get_status=='sick' and 'confine' not in self.advanced_feature :
                 grid[int(connection[a])] += 1
                 grid[int(self.x)]        -= 1
                 rgrid[int(connection[a])] += self.number

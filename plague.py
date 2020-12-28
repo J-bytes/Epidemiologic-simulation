@@ -30,14 +30,37 @@ from prerequisite import small_world_power_law, watts_strogatz,personne
 Initialisation of the grid and the walkers
 """
 
-def grid_init(M,N,n_sick,L,P_infection,P_mortality) :
+def grid_init(M,N,n_sick,L,P_infection,P_mortality,df,columns,advanced_feature,adherence) :
    
     grid=np.zeros(N)
     rgrid=np.zeros(N)
     walkers=[]
-    for i in range(0,M) :
-        rx=np.random.randint(0,N-1)
-        walkers.append(personne(rx,L,i+1,P_infection,P_mortality))
+    if 'empty' in df :
+        for i in range(0,M) :
+            rx=np.random.randint(0,N-1)
+            walkers.append(personne(rx,L,i+1,P_infection,P_mortality))
+            
+    else : #if advanced features has been activated
+       numero=0
+       for index, row in df.iterrows():
+           nombre=int(int(row['proportion of population'])/100*M)
+           infectiosite=float(row['infectiosity'])
+           mortalite=float(row['mortality'])
+           movements=float(row['movements'])
+           age=row['Age']
+           for i in range(0,nombre) :
+               rx=np.random.randint(0,N-1)
+               random_adherence=np.random.random()
+               if random_adherence<adherence :
+                   walkers.append(personne(rx,L,numero+1,infectiosite,mortalite,'healthy',age,movements,advanced_feature))
+               
+               else :
+                   walkers.append(personne(rx,L,numero+1,infectiosite,mortalite,'healthy',age,movements))
+               numero+=1
+        
+        
+    while len(walkers)<M :
+        walkers.append(personne(rx,L,numero+1,infectiosite,mortalite,'healthy',age,movements))
         
         
     #a patient zero(s) is randomly selected 
@@ -56,7 +79,7 @@ Loop that simulate the passage of time. At each iteration a loop on every walker
 all moving.
 """
 #@jit(parallel=True)
-def epidemic(M,N,n_sick_original,max_iter,duree,maps,repetition, liste_sick,liste_health,liste_dead,P_infection,P_mortality) :
+def epidemic(M,N,n_sick_original,max_iter,duree,maps,repetition, liste_sick,liste_health,liste_dead,P_infection,P_mortality,df=['empty'],columns=[],advanced_feature=[],adherence=0) :
     
     r0=[]
     
@@ -64,7 +87,7 @@ def epidemic(M,N,n_sick_original,max_iter,duree,maps,repetition, liste_sick,list
         n_sick=n_sick_original
         n_dead=0
         n_healthy=M-n_sick
-        grid,rgrid,walkers=grid_init(M,N,n_sick,duree,P_infection,P_mortality)
+        grid,rgrid,walkers=grid_init(M,N,n_sick,duree,P_infection,P_mortality,df,columns,advanced_feature,adherence)
        
         iterate=0
        
@@ -95,7 +118,8 @@ def epidemic(M,N,n_sick_original,max_iter,duree,maps,repetition, liste_sick,list
         r0.append(np.mean(rliste[np.where(rliste!=0)]))
   
     return r0
-    
+
+
 
 
 n_iterate=2

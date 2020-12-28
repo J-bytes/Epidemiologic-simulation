@@ -84,13 +84,16 @@ model_options = [
 
 
    ]
-
-
+#--------------------------------------------------------
+#Advanced feature control
+#!!!! Modifying those three element will require manual changes in grid_init,which is located inside plague.py
 params_table = [
     'infectiosity', 'movements', 'mortality','proportion of population'
 ]
 
 
+
+params_table_limits={'infectiosity' : [0,1],'movements' : [0,1],'mortality' : [0,1],'proportion of population' : ['%']}
 Age_groups=["0-24","25-50","50+"]
 
 Age_groups_dict={}
@@ -349,11 +352,11 @@ cote_gauche= html.Div(
                                         dcc.Slider(
                                             id="n_walkers",
 
-                                            value=500,
+                                            value=1000,
 
-                                            min=500,
-                                            max=5000,
-                                            marks=dict([(i,str(i)) for i in range(500,5500,500)]),
+                                            min=1000,
+                                            max=51000,
+                                            marks=dict([(i,str(i)) for i in range(1000,56000,5000)]),
                                             step=None,
 
                                         ),
@@ -559,10 +562,10 @@ cote_droit=html.Div(
 
                                             value=1,
 
-                                            min=0,
+                                            min=1,
                                             max=100,
-                                            marks=dict([(i,str(i)) for i in range(0,100,10)]),
-                                            step=10,
+                                            marks=dict([(i,str(i)) for i in range(1,101,10)]),
+                                            step=None,
                                         ),
                                         html.H5(
                                             "", style={"margin-top": "0px"},
@@ -748,7 +751,7 @@ def build_advanced_filtering():
                                 ),  #End of contingency measures                                   
                         
                         
-                        
+   html.H6(id='validation message'),
    html.Div( #contingency measures
                                     [
                                          html.Div(
@@ -774,7 +777,7 @@ def build_advanced_filtering():
                                                           
         options=[
             {'label': _("Confine sick population"), 'value': 'confine'},
-            {'label': _("Restrict movement"), 'value': 'advanced'},
+            {'label': _("Restrict movement"), 'value': 'restrict'},
             {'label': _("Mask mandate and other sanitary measures"), 'value': 'masks'},
             {'label': _("Close gathering spots"), 'value': 'lockdown'},
            
@@ -949,6 +952,7 @@ def display_output(rows, columns):
 # Selectors -> viz chart (95% CI)
 @app.callback(
     Output("viz_chart", "figure"),
+    Output("validation message", "children"),
   
     [
 
@@ -978,7 +982,7 @@ def display_output(rows, columns):
 def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetition,duree,advanced_switch,rows,columns,advanced_feature,adherence):
 
 
-
+    
     #formatting basic parameter------------------------------
     P/=10
     C=int(0.3*C/10*N)#!!!!!!
@@ -986,42 +990,100 @@ def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetit
     P_mortality/=10
     
     #formatting advanced features------------------------------
+    adherence/=100
+    message=_("The selected parameters are within their accepted values")# default value
     if "True" in advanced_switch :
-        df = pd.DataFrame(rows, columns=[c for c in params_table])
+        df = pd.DataFrame(rows, columns=[c['name'] for c in columns])
+        #df.set_index('Age')
+        #df.to_csv('test.csv')
+        #----------------------------------------------------------------
+        #let's verify the parameter selected are within their accepted value
+        for c in params_table :
+            
+            limites=params_table_limits[c]
+            if '%' in limites :
+                
+                if not df[c].astype(float).sum()==100 :
+                    message=_(f"The {c} parameter does not sums to 100")
+                    advanced_switch=[]
+            else :
+                minimum,maximum=limites[0],limites[1]
+                for rangee in df[c].values :
+                    if not minimum<=float(rangee)<=maximum :
+                        message=_(f"The {c} parameter has the value {rangee} outside the permitted range {limites}")
+                        advanced_switch=[]
+                        
+   
+        #----------------------------------------------------------------
+        
     
   
-   
+    
     #selection of the generator-------------------------------
     if model=="watts" :
-    
-        maps=nx.to_dict_of_lists(nx.Graph(nx.watts_strogatz_graph(N,C,P)))
+        G=nx.Graph(nx.watts_strogatz_graph(N,C,P))
+        if "lockdown" in advanced_feature :
+             for i in range(0,int(N*0.2)) :
+                 noeud=max(dict(G.degree()).items(), key = lambda x : x[1])[0]
+                 G.remove_node(noeud)
+             N-=int(0.2*N)
+       
 
     elif model=="grid" :
-        maps=nx.to_dict_of_lists(nx.Graph(nx.grid_2d_graph(np.sqrt(N),np.sqrt(N))))
+        G=nx.Graph(nx.grid_2d_graph(np.sqrt(N),np.sqrt(N)))
+        if "lockdown" in advanced_feature :
+             for i in range(0,int(N*0.2)) :
+                 noeud=max(dict(G.degree()).items(), key = lambda x : x[1])[0]
+                 G.remove_node(noeud)
+             N-=int(0.2*N)
+       
 
     elif model=="power_law" :
-        maps=nx.to_dict_of_lists(nx.Graph(nx.powerlaw_cluster_graph(N,C,P)))
+        G=nx.Graph(nx.powerlaw_cluster_graph(N,C,P))
+        if "lockdown" in advanced_feature :
+             for i in range(0,int(N*0.2)) :
+                 noeud=max(dict(G.degree()).items(), key = lambda x : x[1])[0]
+                 G.remove_node(noeud)
+             N-=int(0.2*N)
+        
     else :
-        maps=nx.to_dict_of_lists(nx.generators.random_graphs.connected_watts_strogatz_graph(N,C,P))
+        G=nx.Graph(nx.generators.random_graphs.connected_watts_strogatz_graph(N,C,P))
+        if "lockdown" in advanced_feature :
+             for i in range(0,int(N*0.2)) :
+                 noeud=max(dict(G.degree()).items(), key = lambda x : x[1])[0]
+                 G.remove_node(noeud)
+             N-=int(0.2*N)
+        
 
-
+    N=int(N)
+    #we need to relabel the nodes if they were deleted!
+    if "lockdown" in advanced_feature :
+        dictionnary={}
+        for (ex,i) in enumerate(G.nodes) :
+            dictionnary.update( { i : ex } )
+        
+        G=nx.relabel_nodes(G,dictionnary)
+        
+        
+    maps=nx.to_dict_of_lists(G)
     #---------------------------------------------------------
     max_iter=1000 #!!!!!! a remplacer dans le futur si necessaire
    
 
 
     
-    
+  
 
     liste_sick,liste_health,liste_dead=np.zeros((repetition,max_iter)),np.zeros((repetition,max_iter)),np.zeros((repetition,max_iter))
-
-    r0=epidemic(M,N,n_sick_original,max_iter,duree,maps,repetition,liste_sick,liste_health,liste_dead,P_infection,P_mortality)
-
-
+    if "True" in advanced_switch :
+        r0=epidemic(M,N,n_sick_original,max_iter,duree,maps,repetition,liste_sick,liste_health,liste_dead,P_infection,P_mortality,df,columns,advanced_feature,adherence)
+    else :
+        r0=epidemic(M,N,n_sick_original,max_iter,duree,maps,repetition,liste_sick,liste_health,liste_dead,P_infection,P_mortality)
+    
 
     #limit the range of iteration-------------------------------------
     try :
-        limite=np.where(np.logical_or(liste_sick.mean(axis=0).round(0)<1,liste_dead.mean(axis=0).round(0)>M-1))[0][0]
+        limite=np.where(np.logical_or(liste_sick.mean(axis=0).round(0)<1,liste_dead.mean(axis=0).round(0)>M-1))[0][0]+1
         liste_sick,liste_health,liste_dead=liste_sick[:,0:limite],liste_health[:,0:limite],liste_dead[:,0:limite]
 
 
@@ -1106,7 +1168,7 @@ def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetit
 
 
 
-    return fig
+    return fig,message
 
 
 @app.callback(

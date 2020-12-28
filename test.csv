@@ -1,0 +1,4 @@
+,Age,infectiosity,movements,mortality,proportion of population
+0,0-24,0.2,0.8,0.8,0
+1,25-50,0.2,0.2,0.8,10
+2,50+,0.2,0.1,0.2,90
