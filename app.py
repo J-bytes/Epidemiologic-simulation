@@ -87,7 +87,7 @@ model_options = [
 
 
 params_table = [
-    'infectiosity', 'movements', 'mortality',
+    'infectiosity', 'movements', 'mortality','proportion of population'
 ]
 
 
@@ -315,10 +315,10 @@ cote_gauche= html.Div(
 
                                             value=500,
 
-                                            min=100,
+                                            min=500,
                                             max=5000,
-                                            marks=dict([(i,str(i)) for i in range(500,5000,500)]),
-                                            step=100,
+                                            marks=dict([(i,str(i)) for i in range(500,5500,500)]),
+                                            step=None,
 
                                         ),
                                     ],
@@ -349,12 +349,12 @@ cote_gauche= html.Div(
                                         dcc.Slider(
                                             id="n_walkers",
 
-                                            value=50,
+                                            value=500,
 
-                                            min=1,
+                                            min=500,
                                             max=5000,
-                                            marks=dict([(i,str(i)) for i in range(500,5000,500)]),
-                                            step=100,
+                                            marks=dict([(i,str(i)) for i in range(500,5500,500)]),
+                                            step=None,
 
                                         ),
                                      html.Span(children=_("Selection of the range of longitude"),className="wb-inv") ],
@@ -421,38 +421,39 @@ cote_droit=html.Div(
                             [
 
                                  html.Div(html.H3(_("Parameters of the disease"))),
-                                 html.Div(
-                            children=[
-                                html.H4(
-                                    [
-                                        _("Select presets based on a specific disease"),
-                                        html.Img(
-                                            id="show-preset-modal",
-                                            src="assets/question-circle-solid.svg",
-                                            n_clicks=0,
-                                            className="info-icon",
-                                        ),
-                                    ],
-                                     className="container_title",
-                                    style={"margin_bottom" : "0 0 0px"}
-                                )],
-                            id="preset-div")
-                                ,
-                                html.Div([
-                                html.Label(
-                                    dcc.Dropdown(
-                                        id="preset_list",
-                                        options= model_options,
-                                        multi=False,
-                                        value='',
-                                        className="dcc_control",
-
-
-                                    ),
-                                ),
-
-                                  ], style={"padding-bottom": "15px"}
-                                    ),
+                          
+#                                 html.Div(
+#                            children=[
+#                                html.H4(
+#                                    [
+#                                        _("Select presets based on a specific disease"),
+#                                        html.Img(
+#                                            id="show-preset-modal",
+#                                            src="assets/question-circle-solid.svg",
+#                                            n_clicks=0,
+#                                            className="info-icon",
+#                                        ),
+#                                    ],
+#                                     className="container_title",
+#                                    style={"margin_bottom" : "0 0 0px"}
+#                                )],
+#                            id="preset-div"),
+#                                
+#                                html.Div([
+#                                html.Label(
+#                                    dcc.Dropdown(
+#                                        id="preset_list",
+#                                        options= model_options,
+#                                        multi=False,
+#                                        value='',
+#                                        className="dcc_control",
+#
+#
+#                                    ),
+#                                ),
+#
+#                                  ], style={"padding-bottom": "15px"}
+#                                    ),
 
                                html.Div([
                                 html.Div( #connectivity parameter
@@ -594,12 +595,12 @@ cote_droit=html.Div(
                                        dcc.Slider(
                                             id="duree",
 
-                                            value=1,
+                                            value=5,
 
                                             min=5,
                                             max=25,
-                                            marks=dict([(i,str(i)) for i in range(5,35,5)]),
-                                            step=6,
+                                            marks=dict([(i,str(i)) for i in range(5,30,5)]),
+                                            step=None,
                                         ),
                                         html.H5(
                                             "", style={"margin-top": "0px"},
@@ -904,7 +905,7 @@ app.layout = html.Div(
 
 #============================================================================
  # Create show/hide callbacks for each info modal
-for id in ["model", "connectivity", "connectivity_node", "size", "n_walker","mortality","n_repetition","preset", "infectiosity", "n_sick","duree","adherence","contingency"]:
+for id in ["model", "connectivity", "connectivity_node", "size", "n_walker","mortality","n_repetition", "infectiosity", "n_sick","duree","adherence","contingency","age"]:
 
     @app.callback(
         [Output(f"{id}-modal", "style"), Output(f"{id}-div", "style")],
@@ -948,16 +949,15 @@ def display_output(rows, columns):
 # Selectors -> viz chart (95% CI)
 @app.callback(
     Output("viz_chart", "figure"),
-    # [Input("visualize-button", "n_clicks")],
+  
     [
 
         Input("model_list", "value"),
         Input("connectivity-parameter", "value"),
-        # Input("x_axis_selection_1", "value"),
-        # Input("y_axis_selection_1", "value"),
+      
         Input("max-connectivity-parameter", "value"),
         Input("network-size", "value"),
-        Input("preset_list", "value"),
+        
         Input("infectiosity-parameter", "value"),
         Input("mortality-parameter", "value"),
 
@@ -965,22 +965,33 @@ def display_output(rows, columns):
         Input("n_walkers", "value"),
         Input("repetition", "value"),
         Input("duree", "value"),
+        
+        Input("advanced_feature_switch","value"),
+        Input('table-editing-simple', 'data'),
+        Input('table-editing-simple', 'columns'),
+        Input('advanced_feature','value'),
+        Input('adherence-parameter','value')
 
 
     ]
 )
-def make_viz_chart(model,P,C,N,disease,P_infection,P_mortality,n_sick_original,M,repetition,duree):
+def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetition,duree,advanced_switch,rows,columns,advanced_feature,adherence):
 
 
 
-
+    #formatting basic parameter------------------------------
     P/=10
     C=int(0.3*C/10*N)#!!!!!!
     P_infection/=10
     P_mortality/=10
-
+    
+    #formatting advanced features------------------------------
+    if "True" in advanced_switch :
+        df = pd.DataFrame(rows, columns=[c for c in params_table])
+    
   
    
+    #selection of the generator-------------------------------
     if model=="watts" :
     
         maps=nx.to_dict_of_lists(nx.Graph(nx.watts_strogatz_graph(N,C,P)))
@@ -991,17 +1002,15 @@ def make_viz_chart(model,P,C,N,disease,P_infection,P_mortality,n_sick_original,M
     elif model=="power_law" :
         maps=nx.to_dict_of_lists(nx.Graph(nx.powerlaw_cluster_graph(N,C,P)))
     else :
-        maps=nx.to_dict_of_lists(nx.connected_watts_strogatz_graph(nx.powerlaw_cluster_graph(N,C,P)))
+        maps=nx.to_dict_of_lists(nx.generators.random_graphs.connected_watts_strogatz_graph(N,C,P))
 
 
-
-    max_iter=1000 #!!!!!! a remplacer dans le futur
-    n_sick=n_sick_original
-    n_dead=0
-    n_healthy=M-n_sick
+    #---------------------------------------------------------
+    max_iter=1000 #!!!!!! a remplacer dans le futur si necessaire
+   
 
 
-
+    
     
 
     liste_sick,liste_health,liste_dead=np.zeros((repetition,max_iter)),np.zeros((repetition,max_iter)),np.zeros((repetition,max_iter))
@@ -1010,7 +1019,7 @@ def make_viz_chart(model,P,C,N,disease,P_infection,P_mortality,n_sick_original,M
 
 
 
-
+    #limit the range of iteration-------------------------------------
     try :
         limite=np.where(np.logical_or(liste_sick.mean(axis=0).round(0)<1,liste_dead.mean(axis=0).round(0)>M-1))[0][0]
         liste_sick,liste_health,liste_dead=liste_sick[:,0:limite],liste_health[:,0:limite],liste_dead[:,0:limite]
@@ -1025,6 +1034,8 @@ def make_viz_chart(model,P,C,N,disease,P_infection,P_mortality,n_sick_original,M
         repetition=0.2
     else :
         repetition=0
+        
+    #graphic setup-------------------------------------------------
     fig = go.Figure()
     fig.add_trace(go.Scatter(
 
@@ -1109,7 +1120,7 @@ def make_viz_chart(model,P,C,N,disease,P_infection,P_mortality,n_sick_original,M
         # Input("y_axis_selection_1", "value"),
         Input("max-connectivity-parameter", "value"),
         Input("network-size", "value"),
-        Input("preset_list", "value"),
+        #Input("preset_list", "value"),
         Input("infectiosity-parameter", "value"),
         Input("mortality-parameter", "value"),
 
@@ -1121,7 +1132,7 @@ def make_viz_chart(model,P,C,N,disease,P_infection,P_mortality,n_sick_original,M
 
     ]
 )
-def conclusion(model,P,C,N,disease,Pi,Pd,n_sick_original,M,repetition,duree):
+def conclusion(model,P,C,N,Pi,Pd,n_sick_original,M,repetition,duree):
 
     text=f"Using the {model}, you have managed to {n_sick_original} and C={C} and P={P} and lang={session['language']}"
 

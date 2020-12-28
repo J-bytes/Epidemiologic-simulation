@@ -75,10 +75,14 @@ Bien que cette application soit fonctionnel, celle-cci n'en est qu'à son premie
 
  - Remplacer chaque phrases qui doit être traduite (emballé par la fonction _() ) par un identifiant pour permettre d'interactivement remplacé ces phrases par une version traduite. Cela requiert aussi l'implémentation d'une fonction qui prends comme callback_input la langue, et comme callback_output chacune de ces phrases.
 
- - Ajouter d'autre types d'algorithmes de graphes
+ - Ajouter d'autre types d'algorithmes de graphes (voir [networkx](https://networkx.org/documentation/stable/reference/generators.html#module-networkx.generators.random_graphs))
 
  - Ajouter des paramètres plus complexe (population qui varie selon l'âge, des personnes asymptomatiques, des mesures de confinement, etc)
 
  - Ajouter une animation démontrant comment les marcheurs se promène sur le réseau ( animation plus petite générée d'avance? (gif))
 
  - Implementing graph visualisation through dash-cytoscope
+
+ - Bouton téléchargement des résultats et/ou
+
+ - Bouton comparaison pour superposer deux résultats de simulations

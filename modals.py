@@ -7,7 +7,7 @@ Created on Fri Dec 18 23:35:56 2020
 
 
 from flask_babel import _ ,Babel
-
+from textwrap import dedent
 import dash_core_components as dcc
 import dash_html_components as html
 
@@ -170,14 +170,26 @@ def modals_language() :
                         build_modal_info_overlay(
                             "contingency",
                             "top",
-                            _(
+                            _(dedent("""
 
-                    "The Construction Date panel displays a histogram of the construction \
-                    date of each tower in the dataset.  The dark gray bars represent the set of \
-                    towers in the current selection, while the light gray bars underneath \
-                    represent all towers in the dataset. "
+                        Theses checkboxes allows the user to apply different contingency measures in order 
+                        to alter the results of the epidemics and either slow it down or stop it 
+                            
+                            - Confine : The sick will be forced to stop moving. They may
+                            still infect people they meet
+                            
+                            -Restrict movement : Walkers now have a 75% chance to stay at their location
+                            greatly reducing their movement
+                            
+                            -Mask mandate : The population adhering to the measure will have a 60% decreased risk of getting infected.
+                            Note : Mask usually protect others and not the wearer mostly but this implementation would require more trouble
+                            Also, the 60% decreased has been chosen without careful research.
+                            
+                            -Close gathering spots : 20% of the  nodes are removed, from the ones with the ones having the most connection firsts
+                            """
 
-                            ),
+                        
+                            )),
                                 
                                 
                         ),
@@ -187,10 +199,7 @@ def modals_language() :
                             "top",
                             _(
 
-                    "The Construction Date panel displays a histogram of the construction \
-                    date of each tower in the dataset.  The dark gray bars represent the set of \
-                    towers in the current selection, while the light gray bars underneath \
-                    represent all towers in the dataset. "
+                    "Randomly select a percentage of people that won't respect the measures applied."
 
                             ),
                                 
@@ -201,14 +210,25 @@ def modals_language() :
                                     build_modal_info_overlay(
                             "age",
                             "top",
-                            _(
+                            _(dedent(
 
-                    "The Construction Date panel displays a histogram of the construction \
-                    date of each tower in the dataset.  The dark gray bars represent the set of \
-                    towers in the current selection, while the light gray bars underneath \
-                    represent all towers in the dataset. "
+                    """
+                    This table allows to implement different variables for different age groups.
+                    
+                        -infectiosity : You can override the probability of catching the virus from somebody else by age. You should
+                        keep this number between 0 and 1.
+                    
+                        -mortality : Probability of a person to die after the period of infection. It should be between 0 and 1
+                    
+                        -movements : The probability of a person to move at each iteration. By default this probability is one 
+                        for everybody. 
+                        
+                        -proportion : the percentage of each group that will compose the population. The total should sum to 100.
+                    
+                    
+                    """
 
-                            ),
+                            )),
                                 
                                 
                         )
