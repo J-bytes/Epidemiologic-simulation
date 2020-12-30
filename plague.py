@@ -31,7 +31,42 @@ Initialisation of the grid and the walkers
 """
 
 def grid_init(M,N,n_sick,L,P_infection,P_mortality,df,columns,advanced_feature,adherence) :
-   
+    """
+    
+
+    Parameters
+    ----------
+    M : integer
+        Number of walkers in the network.
+    N : integer
+        Number of nodes in the network.
+    n_sick : integer
+        the number of sick indiviual at iteration 0
+    L : integer
+        The number of iteration once infected during which the person is contagious.
+    P_infection : float
+            The probability of getting infected if meeting a sick person
+    P_mortality : float
+            The probability of dying after "lifespan" iteration once sick.
+    df : pandas dataframe
+        A dataframe containing the values for the paramters defined by age groups
+     columns : Array
+        An array of dictionnary containing the column name for the pandas dataframe from the datatable
+    advanced_feature : array
+        an arry containing the keywords ["confine","restrict","masks","lockdown"] depending if the checkboxes are checked
+    adherence : float
+        The probability of a random individual in the population to respect the measures as defined in advanced_feture
+
+    Returns
+    -------
+    grid : array
+        An array giving the number of infected people in each node.
+    rgrid : array
+        An array contining the number of the first individual to "infect" a node. Used to estimate R
+    walkers : array of class personne
+        An arrray containing all of the walkers inside the newtork as object of class personne as defined in prerequisite.py.
+
+    """
     grid=np.zeros(N)
     rgrid=np.zeros(N)
     walkers=[]
@@ -80,7 +115,54 @@ all moving.
 """
 #@jit(parallel=True)
 def epidemic(M,N,n_sick_original,max_iter,duree,maps,repetition, liste_sick,liste_health,liste_dead,P_infection,P_mortality,df=['empty'],columns=[],advanced_feature=[],adherence=0) :
+    """
+    this function takes empty lists ( liste_sick,liste_health,liste_dead) and fills them with the values of the simulation
+    without explicitly returning them.
+
+    Parameters
+    ----------
+   M : integer
+        Number of walkers in the network.
+    N : integer
+        Number of nodes in the network.
+    n_sick_original : integer
+        the number of sick indiviual at iteration 0
+    max_iter : integer
+        The maximum number of iteration the simulation can run before shutting down
+        to avoids running forever.
+    duree : integer
+        The number of iteration once infected during which the person is contagious.
+    maps : dictionnary
+        A dictionnary with all the nodes as key and the edges as values
+    repetition : integer
+       the number of repetition of the simulation for statistical analysis
+    liste_sick : array of integers
+        The number of sick individuals at each iterations
+    liste_health :  array of integers
+        The number of healthy individuals at each iterations
+    liste_dead :  array of integers
+        The number of dead individuals at each iterations
+    P_infection : float
+            The probability of getting infected if meeting a sick person
+    P_mortality : float
+            The probability of dying after "lifespan" iteration once sick.
+    df : pandas dataframe
+        A dataframe containing the values for the paramters defined by age groups. The default is ['empty'].
+     columns : Array
+        An array of dictionnary containing the column name for the pandas dataframe from the datatable. The default is [].
+    advanced_feature : array
+        an arry containing the keywords ["confine","restrict","masks","lockdown"] depending if the checkboxes are checked. The default is [].
+    adherence : float
+        The probability of a random individual in the population to respect the measures as defined in advanced_feture. The default is 0.
+  
+    Returns
+    -------
+    r0 : float
+        The average number of person a sick individuals infects
+
+
     
+    """
     r0=[]
     
     for i in range(0,repetition) :
@@ -135,7 +217,7 @@ max_iter=100000 # maximum number of iterations
 P_infection=0.8
 P_mortality=0.8
 
-if __name__ == '__main__':
+if __name__ == '__main__': 
    
     
   
@@ -179,27 +261,3 @@ if __name__ == '__main__':
         plt.ylabel('Durée moyenne de \'épidémie')
         #plt.ylabel("Nombre total de personne infectées")
         #End of the code 
-
-"""
-Useful or interesting ressources :
-    
-https://github.com/sleepokay/watts-strogatz/blob/master/SmallWorldGraph.py # to generate graph maps in the small world style
-
-
-----------------------------
-
-Points à explorer/faire :
-    
-    3) S'assurer du bon fonctionnement du code (comparer avec des résutlats pré-établi)'
-    
-    
-    4) "Mapper" le comportement de la simulation en fonction des paramètres globale du système
-    
-    5) Trouver des OD (origin-destination ) dataset possible d'utiliser'
-    
-    5.2) Si oui, utilisez seaborn, plotly ou geopanda pour projeter sur une carte (interface graphique)
-    
-    6) Ajouter des commentaires au codes?
-
-
-"""

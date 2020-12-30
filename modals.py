@@ -70,7 +70,9 @@ def modals_language() :
                             _(
 
                     "This parameter controls the number of connection associated to each node. It has been normalize on a scale from 1 to 10, \
-                    with the formula C=N/100*connectivity. By default those connection are made between neighboring nodes."
+                    with the formula C=N/100*connectivity. By default those connection are made between neighboring nodes. This means you can at maximum have each nodes \
+                    be connected to 10% of all the nodes in the network"
+
 
                             ),
                         ),
@@ -107,26 +109,13 @@ def modals_language() :
 
 
                     "This allows the simulation to be repeated multiple times in order to \
-                    estimate a standard deviation on the result. The error bars are generated \
+                    estimate a standard deviation on the result. The error bars are generated as\
                     as 0.2 times the standard deviation."
 
                             ),
                         ),
 
 
-                           build_modal_info_overlay(
-                            "preset",
-                            "top",
-                            _(
-
-                    "The Signal Range panel displays a histogram of the signal range of \
-                    each tower in the dataset.  The dark gray bars represent the set of towers \
-                    in the current selection, while the light gray bars underneath represent \
-                    all towers in the dataset."
-
-
-                            ),
-                        ),
 
                              build_modal_info_overlay(
                             "mortality",

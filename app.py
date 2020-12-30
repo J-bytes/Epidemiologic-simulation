@@ -63,17 +63,6 @@ babel = Babel(server)  # Hook flask-babel to the app
 # Controls for webapp
 
 # Dropdown options
-preset_options = [
-
-
-    {'label': _('Sars-cov-2'), 'value':      'covid'},
-    {'label': _('influenza'), 'value':      'influenza'},
-    {'label': _('ebola'), 'value':      'ebola'},
-
-
-
-   ]
-# Dropdown options
 model_options = [
 
 
@@ -95,7 +84,7 @@ params_table = [
 
 params_table_limits={'infectiosity' : [0,1],'movements' : [0,1],'mortality' : [0,1],'proportion of population' : ['%']}
 Age_groups=["0-24","25-50","50+"]
-
+df_diseases=pd.read_csv('disease_compare.csv')
 Age_groups_dict={}
 for (ex,p) in enumerate(params_table) :
     Age_groups_dict.update({p : ex})
@@ -127,6 +116,7 @@ layout = dict(
 #===========================================================================
 # Builds the layout for the header
 def build_header():
+    
     return html.Div(
             [
                 html.Div([], className="one column"),
@@ -207,7 +197,7 @@ cote_gauche= html.Div(
                                         id="model_list",
                                         options= model_options,
                                         multi=False,
-                                        value='connected watts',
+                                        value='connected-watts',
                                         className="dcc_control",
 
 
@@ -223,7 +213,7 @@ cote_gauche= html.Div(
                             children=[
                                 html.H4(
                                     [
-                                        _("Connectivity parameter (x10)"),
+                                        _("Connectivity of the graph"),
                                         html.Img(
                                             id="show-connectivity-modal",
                                             src="assets/question-circle-solid.svg",
@@ -261,7 +251,7 @@ cote_gauche= html.Div(
                             children=[
                                 html.H4(
                                     [
-                                        _("Connectivity-per-node"),
+                                        _("Randomness of the graph"),
                                         html.Img(
                                             id="show-connectivity_node-modal",
                                             src="assets/question-circle-solid.svg",
@@ -633,8 +623,17 @@ cote_droit=html.Div(
 modals=modals_language()
 
 
-#This function define the structure of the application after the header(excluding the graph)
+
 def build_filtering():
+    """
+    
+
+    Returns
+    -------
+    TYPE : Dash html component 
+        This function build the html structure of the application input section, to be later injected inside the app for more convenience.
+
+    """
     return html.Div([
         html.Div(
             [
@@ -685,8 +684,17 @@ def build_filtering():
 
 
 
-# This application builds the layout for the graph
+
 def build_advanced_filtering():
+    """
+    
+
+    Returns
+    -------
+    TYPE : Dash html component
+        This function builds the layout for the advanced features inputs by the user
+
+    """
     return html.Div([
                 html.Details(
                     
@@ -842,8 +850,17 @@ def build_advanced_filtering():
 
 
 
-# This application builds the layout for the graph
+
 def build_stats():
+    """
+    
+
+    Returns
+    -------
+    TYPE : Dash html component
+         This function builds the layout for the graph and conclusion
+
+    """
     return html.Div([
         html.Div([
                 html.Div(
@@ -953,6 +970,7 @@ def display_output(rows, columns):
 @app.callback(
     Output("viz_chart", "figure"),
     Output("validation message", "children"),
+    Output("Conclusion", "children"),
   
     [
 
@@ -980,7 +998,50 @@ def display_output(rows, columns):
     ]
 )
 def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetition,duree,advanced_switch,rows,columns,advanced_feature,adherence):
+    """
+    
 
+    Parameters
+    ----------
+    model :  string
+        the name of the generator to use for the graph
+    P : integer
+        The probability (normalize between 0-10) that a given edge randomly changes one of its connection to a node
+    C : integer
+        An integer between 0 and 10 to control the number of edge each node should have at first
+    N : integer
+        The size of the network given by the number of node
+    P_infection : integer
+        the probability of getting infected when encountering a sick individual, from 0 to 10
+    P_mortality : integer
+        the probability of dying after the disease, from 0 to 10
+    n_sick_original : integer
+        The number of sick person at iteration 0
+    M : integer
+        The number of walkers in the network
+    repetition : integer
+        The number of time the simulation is repeated for statistical analysis (standard deviation and average)
+    duree : integer
+        The number of iteration a person stay sick before either dying or getting immune
+    advanced_switch : array
+        An array which will contain "True" if the checkbox is checked
+    rows : Array
+        An array of dictionnary containing the data for the pandas dataframe from the datatable
+    columns : Array
+        An array of dictionnary containing the column name for the pandas dataframe from the datatable
+    advanced_feature : array
+        an arry containing the keywords ["confine","restrict","masks","lockdown"] depending if the checkboxes are checked
+    adherence : integer
+        An integer from 0 to 100 reflecting the percentage of the population that respect the measures as defined in advanced_feture
+
+    Returns
+    -------
+    fig : Dash component
+        Dash component that includes the plot
+        
+    message : string
+        A string that will be showned under the table to explain if a parameter has an unexpected value
+    """
 
     
     #formatting basic parameter------------------------------
@@ -1112,7 +1173,7 @@ def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetit
        connectgaps=True,
        showlegend=True,
     error_y= dict(
-        type='constant',
+        type='data',
         array=np.std(liste_dead,axis=0)*repetition,
         color='purple',
         thickness=1.5,
@@ -1134,7 +1195,7 @@ def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetit
        connectgaps=True,
        showlegend=True,
     error_y=dict(
-        type='constant',
+        type='data',
         array=np.std(liste_health,axis=0)*repetition,
         color='blue',
         thickness=1.5,
@@ -1157,7 +1218,7 @@ def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetit
        connectgaps=True,
        showlegend=True,
     error_y=dict(
-        type='constant',
+        type='data',
         array=np.std(liste_sick,axis=0)*repetition,
         color='red',
         thickness=1.5,
@@ -1165,41 +1226,36 @@ def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetit
     ),
     marker=dict(color='red', size=8)
 ))
+    dr0 = ""
+    if len(r0) > 1:
+        dr0 += f"+/- {np.std(r0)}"
+        r0 = np.mean(r0)
+    for g in model_options :
+        if g['value']==model :
+            model_label=g['label']
+
+    argument = np.argmin((df_diseases['R0'].values - r0) ** 2 + ((df_diseases['mortality'].values) - P_mortality) ** 2)
+
+    disease_name=df_diseases['Name'].values[argument]
+    disease_R0=df_diseases['R0'].values[argument]
+    disease_mortality=df_diseases['mortality'].values[argument]
 
 
 
-    return fig,message
 
+    conclusion=f"Using the {model_label} to generate the network, you have infected {(1-np.mean(liste_health,axis=0)[limite-1]/M)*100}% of the population leaving  {np.mean(liste_dead,axis=0)[limite-1]/M*100}% of the original " \
+               f" population dead. This model estimated the R0 factor to be {r0} {dr0}. Your epidemic most closely ressemble {disease_name} which has a {disease_mortality} mortality rate" \
+               f" and a r0 factor of {disease_R0} \n" \
+               f"\n" \
+               f" The R0 factor represent the number of person, in average, one sick person will then infect.  This number is one of the primordial " \
+               f" caracteristic of a disease during an outbreak.py \n" \
+               f"\n" \
+               f" Interesting fact, {disease_name} is a {df_diseases['ty^pe'].values[argument]} that is spreads by {df_diseases['spread'].values[argument]} \n" \
+               f"\n" \
+               f"\n" \
+               f"***The mortality rates for the other diseases are for healthy adults. Source : https://docs.google.com/spreadsheets/d/1kHCEWY-d9HXlWrft9jjRQ2xf6WHQlmwyrXel6wjxkW8/edit#gid=0"
 
-@app.callback(
-    Output("Conclusion", "children"),
-    # [Input("visualize-button", "n_clicks")],
-    [
-
-        Input("model_list", "value"),
-        Input("connectivity-parameter", "value"),
-        # Input("x_axis_selection_1", "value"),
-        # Input("y_axis_selection_1", "value"),
-        Input("max-connectivity-parameter", "value"),
-        Input("network-size", "value"),
-        #Input("preset_list", "value"),
-        Input("infectiosity-parameter", "value"),
-        Input("mortality-parameter", "value"),
-
-        Input("n_sick_initial", "value"),
-        Input("n_walkers", "value"),
-        Input("repetition", "value"),
-        Input("duree", "value"),
-
-
-    ]
-)
-def conclusion(model,P,C,N,Pi,Pd,n_sick_original,M,repetition,duree):
-
-    text=f"Using the {model}, you have managed to {n_sick_original} and C={C} and P={P} and lang={session['language']}"
-
-    return text
-
+    return fig,message,conclusion
 
 
 

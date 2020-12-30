@@ -8,9 +8,26 @@ Dans le cadre de mon projet de fin de Baccalauréat en physique, et dans l'optiq
 
 Cette application se veut la fondation du projet, qui pourra, selon la demande, être repris et améliorer par de futures élèves afin de constituer une étude comparative des différents algorithmes de génération de graphes de type "small-world" et des impacts de l'utilisation de ceux-ci sur les résultats de simulation.
 
-## Démarrage rapide
+### Démarrage rapide
 
 Le coeur de la visualisation est contenu dans app.py, alors que la simulation en tant que soit est contenu dans "plague.py". Le but est de maintenir ce fichier comme indépendant du restant de la simulation , permettant de rapidement pouvoir comparer les résultats et "débugger" tout problème éventuel. Prerequisite contient des définitions de fonctions et de classe nécessaire à l'exécution de "plague.py".
+chaque fonction présente dans ces codes possédera un "docstring" qui en expliquera les entrées et sorties
+
+Il existe trois modes de fonctionnement pour cette application
+
+#### Site Web
+
+Il est possible d'accéder à cette application grâce au serveur [Heroku](https://phy3030.herokuapp.com/) . Toutefois la version gratuite limite la puissance de calcul
+
+#### Serveur web local
+
+En préparant un environnement python qui contient les prérequis nécessaire (pip install -r requirements.txt), il est possible de lancer le code app.py sur son ordinateur personnel et d'accéder au site web par l'adresse
+"local_host":5555 ou local_host est remplacée par l'adresse locale de l'ordinateur . Par défaut cette adresse devrait être 127.0.0.1 ou encore 0.0.0.0 tel quMil suffit de taper 127.0.0.1:5555 dans le navigateur
+
+#### Application standalone
+
+Il est également possible de lancer le code plague.py en "standalone". Toutefois, ce faisant, on perds le caractère interactif et il est plus difficile d'utiliser les paramètres avancés
+
 
 
 ### App.py
@@ -52,10 +69,10 @@ Le fichier modals.py contient la fonction modals_language qui permet de retourne
 
 ## Construit avec
 
- - [Plotly Dash](  https://plotly.com/dash/) - Le framework Python construit sur Flask a été utilisé pour développer l'application. Tous les composants et visualisations de l'application web sont des objets Dash qui sont créés et mis à jour dans les fonctions de rappel de l'application. Je vous recommande de consulter la documentation complète de Dash (lien) si vous n'êtes pas sûr de son fonctionnement.
+  - [Plotly Dash](  https://plotly.com/dash/) - Le framework Python construit sur Flask a été utilisé pour développer l'application. Tous les composants et visualisations de l'application web sont des objets Dash qui sont créés et mis à jour dans les fonctions de rappel de l'application. Je vous recommande de consulter la documentation complète de Dash (lien) si vous n'êtes pas sûr de son fonctionnement.
 
 
-  - [Alouette](https://github.com/asc-csa/AlouetteApp) - Cette application fut modelé sur l'application de visualisation de l'agence spatiale canadienne Alouette et Scisat
+  - [Alouette](https://github.com/asc-csa/AlouetteApp) - Cette application fut modelée sur l'application de visualisation de l'agence spatiale canadienne Alouette et Scisat
   (Crédit : Hansen Liu, Wasiq Mohammmad, Camille Roy et Jonathan Beaulieu-Emond), sous licence MIT
 
 

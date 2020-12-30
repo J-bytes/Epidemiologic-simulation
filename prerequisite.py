@@ -10,26 +10,35 @@ class personne:
 
     def __init__(self, x, lifespan,number,P_infection,P_mortality,status="healthy",age="24-50",movements=1,advanced_feature=[]):
         """
-        This function defines the property of the object personne such as position(x), etc.
+         This function defines the property of the object personne such as position(x), etc.
 
         Parameters
         ----------
-        x : TYPE
-            DESCRIPTION.
-        status : TYPE, optional
-            DESCRIPTION. The default is "healthy".
-        lifespan : TYPE, optional
-            DESCRIPTION. The default is L.
-        walk_speed : TYPE, optional
-            DESCRIPTION. The default is 1.
-        age : TYPE, optional
-            DESCRIPTION. The default is '10-24'.
+        x : integer
+            The number of the node on which the walker is currently
+        lifespan : integer
+            The number of iteration once infected during which the person is contagious.
+        number : integer
+            The ID for this person. This is used to evaluate the R factor
+        P_infection : float
+            The probability of getting infected if meeting a sick person
+        P_mortality : float
+            The probability of dying after "lifespan" iteration once sick.
+        status : string, optional
+            The status of the individual, either "sick","healthy","immune" or "dead". The default is "healthy".
+        age : string, optional
+            The age group to which the person belongs. The default is "24-50".
+        movements : float, optional
+            The probability a person will move at each iteration. The default is 1.
+        advanced_feature : array of strings, optional
+            An array of string containing contingency measures. The default is [].
 
         Returns
         -------
         None.
 
         """
+        
   
         self.x = x # position
         self.number=number
@@ -67,12 +76,16 @@ class personne:
 
     def update_pos(self,maps,grid,rgrid):
         """
-        Update the position of the person based on the available destination as given by the map
+        
 
         Parameters
         ----------
-        maps : dictionnary of all the connection of each point in the type of the graph theory
-        grid : array giving the number of infected people in each node
+        maps : dictionnary
+            dictionnary of all the connection of each point in the type of the graph theory.
+        grid : array
+            An array giving the number of infected people in each node.
+        rgrid : array
+            An array contining the number of the first individual to "infect" a node. Used to estimate R
 
         Returns
         -------
@@ -80,6 +93,7 @@ class personne:
 
         """
         
+    
         r=np.random.random()
         if  self.get_status != "dead" and   self.get_status != "immune" and r<self.P_movements:
            
@@ -101,20 +115,33 @@ class personne:
 
     def update_status(self,maps,grid,rgrid,n_healthy,n_sick,n_dead):
             """
-            This function verify the status of our person. If a sick person is present on the node at the same time, 
-            the person will get sick too.
-    
-            Parameters
-            ----------
-            maps : dictionnary of all the connection of each point in the type of the graph theory.
-            grid : array giving the number of infected people in each node.
-    
-            Returns
-            -------
-            None.
-    
-            """
-         
+        
+
+        Parameters
+        ----------
+        maps : dictionnary
+            dictionnary of all the connection of each point in the type of the graph theory.
+        grid : array
+            An array giving the number of infected people in each node.
+        rgrid : array
+            An array contining the number of the first individual to "infect" a node. Used to estimate R
+        n_healthy : integer
+            Number of healthy person
+        n_sick : integer
+           Number of sick person
+        n_dead : integer
+           Number of dead person
+
+        Returns
+        -------
+        n_healthy : integer
+            Number of healthy person
+        n_sick : integer
+           Number of sick person
+        n_dead : integer
+           Number of dead person
+
+        """
             
             if self.status == "healthy" :
                 
@@ -149,6 +176,18 @@ class personne:
                     
             return n_healthy,n_sick,n_dead
               
+        
+        
+        
+        
+#=================================================================================================
+"""
+
+The following section is not used in the application. It simply represent some of the previous attempts
+to manually implement some of the graph generator available in networkx as a learning exercice.
+
+
+"""
 def watts_strogatz(N,C,P):
     sigma=0
     tries=0

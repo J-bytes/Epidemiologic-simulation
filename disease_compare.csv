@@ -1,0 +1,43 @@
+Name,alt name,R0,mortality,,ty^pe,spread,days,world
+Anthrax (untreated),,6.5,0.2,,bacterium,airborne,,-
+Bird Flu (H5N1),,1,0.6,,virus,airborne droplet,2,18
+Bubonic Plague (untreated),,1,0.6,,bacterium,bites,3,-
+C.Difficile,,1.25,0.24,,bacterium,fecal-oral,60,-
+Campylobacter,,0.19,0.01,,bacterium,food,0.6,-
+Chicken Pox,,8.5,0,,virus,airborne droplet,0.2,-
+Cholera,,2.13,0.02,,bacterium,,,"94,000"
+Dengue Fever,,3,0.05,,virus,bites,,"29,000"
+Diphtheria,,6.5,0.08,,bacterium,body fluids,,"2,600"
+E.coli,,1.15,0.04,check,bacterium,fecal-oral,1,"260,000"
+Ebola,,2.5,0.5,,virus,body fluids,0.5,"4,555"
+"Hand, Foot and Mouth",Enterovirus D68,3.5,0,,virus,body fluids,14,
+Hepatitis B,,4.04,0.01,,virus,body fluids,0.7,"150,000"
+HIV (treated),Human immunodeficiency virus,3.5,0.02,,virus,sexual contact,7,"1,500,000"
+HIV (untreated),,3.5,0.8,,virus,sexual contact,7,"1,500,000"
+Influenza Pandemic 1918,,3,0.03,,virus,airborne droplet,,"75,000,000"
+Lyme Disease,,4.4,0,,bacterium,bites,,-
+Malaria (P. falciparum),,80,0.01,,parasite,bites,0,"620,000"
+Malaria (P. malariae),,16,0.01,,parasite,bites,0,"620,000"
+Measles,,15,0,,virus,airborne,0.1,"130,000"
+MERS,Middle East Respiratory Syndrome,0.5,0.45,,virus,airborne droplet,2,170
+MRSA,,1.63,0.2,,bacterium,surfaces,7,-
+Mumps,,12.5,0.01,,virus,airborne droplet,,-
+Norovirus,,2,0,,virus,surfaces,12,"150,000"
+Pertussis (Whooping Cough),,14.5,0.04,death rate in infants,bacterium,airborne droplet,,"67,000"
+Pneumonic Plague (untreated),,3.2,1,,bacterium,airborne droplet,3,-
+Polio,,6,0.22,,virus,fecal-oral,,20
+Rabies (treated),,1.6,0.01,,virus,bites,0,"35,000"
+Rabies (untreated),,1.6,1,,virus,bites,0,"35,000"
+Common Cold,Rhinovirus,6,0,,virus,airborne droplet,0.1,-
+Rotavirus,,17.6,0,mostly causes death in children & infants,virus,fecal-oral,7,"450,000"
+Rubella,,6,0,,virus,airborne droplet,,-
+Salmonella,,0.8,0.01,,bacterium,food,0.6,"115,000"
+SARS,,2.4,0.1,,virus,airborne droplet,1,0
+Scarlet Fever,,2.8,0.01,,bacterium,body fluids,,-
+Seasonal Flu,,2.5,0,,virus,airborne droplet,1,"375,000"
+Smallpox,variola virus,6,0.15,,virus,airborne droplet,,0
+Swine Flu (H1N1),,1.5,0,,virus,airborne droplet,0.4,"360,000"
+Syphilis (untreated),,0.9,0.33,,bacterium,sexual contact,11,"79,000"
+Tuberculosis (untreated),,10,0.6,,bacterium,airborne droplet,60,"930,000"
+Typhoid,,2.8,0.2,fatality: 1-4% if treated ,bacterium,fecal-oral,,"200,000"
+Hantavirus,,1.3,0.36,varies per strain,virus,"airborne, fecal-oral",8,
