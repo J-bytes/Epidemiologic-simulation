@@ -141,7 +141,7 @@ def build_header():
                 html.Div(
                     [
                         html.H1(
-                             _("Application to visualise epidemiologic simulation"),
+                             _("Application to visualize epidemiologic simulations"),
                             style={"margin-bottom": "10px", "margin-left": "15%"},
                            ),
                     ],
@@ -329,7 +329,7 @@ cote_gauche= html.Div(
                             children=[
                                 html.H4(
                                     [
-                                        _("Number of walker in the network"),
+                                        _("Number of walkers"),
                                         html.Img(
                                             id="show-n_walker-modal",
                                             src="assets/question-circle-solid.svg",
@@ -365,7 +365,7 @@ cote_gauche= html.Div(
                             children=[
                                 html.H4(
                                     [
-                                        _("Number of repetition (for statistical analysis)"),
+                                        _("Number of repetitions"),
                                         html.Img(
                                             id="show-n_repetition-modal",
                                             src="assets/question-circle-solid.svg",
@@ -538,7 +538,7 @@ cote_droit=html.Div(
                             children=[
                                 html.H4(
                                     [
-                                        _("Number of person sick at iteration 0"),
+                                        _("Number of person initially sick"),
 
                                         html.Img(
                                             id="show-n_sick-modal",
@@ -656,8 +656,8 @@ def build_filtering():
                         html.Div(
                             [
                                  html.H6( _("")),
-                                 html.P( _("This application allows the user to quickly see the results of simulation of epidemiology on small-world networks")),
-                                 html.P( _("This application provides users the ability to alter different parameter and visualise the impact on those on the propagation of a virus throughout a community"))
+                                 html.P( _("This application allows the user to quickly see the results of epidemiologic simulations  on small-world networks and others.")),
+                                 html.P( _("This application provides users the ability to alter different parameters and visualize the impact of those on the propagation of a virus throughout a community."))
                             ],
                             id="description_div",
                         ),
@@ -705,7 +705,7 @@ def build_advanced_filtering():
                     
                     html.Div([
                         
-                           html.H3(_("This panel let you control advanced features. Those features are experimental and I cannot garantee the results")),
+                           html.H3(_("This panel let you control advanced features. Those features are still experimental by lack of time, I cannot garantee the accuracy of these results")),
                         
                         
                         
@@ -919,7 +919,7 @@ def build_stats():
 
                 ],
 
-               
+
             ),
         ]),
 
@@ -1188,6 +1188,17 @@ def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetit
         
     #graphic setup-------------------------------------------------
     fig = go.Figure()
+    fig.update_layout(
+        title="Status of the population at each iteration",
+        xaxis_title="Iterations",
+        yaxis_title="Number of persons",
+
+     #   font=dict(
+     #       family="Courier New, monospace",
+     #       size=18,
+     #       color="RebeccaPurple"
+     #   )
+    )
     fig.add_trace(go.Scatter(
 
     name="dead",
@@ -1197,7 +1208,7 @@ def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetit
 
        #line_color="rgba(255,255,255,0)",
        fillcolor="rgba(255,255,255,0)",
-       line={'color': 'rgb(18,99,168)'},
+       line={'color': 'purple'},
        connectgaps=True,
        showlegend=True,
     error_y= dict(
@@ -1219,7 +1230,7 @@ def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetit
 
        #line_color="rgba(255,255,255,0)",
        fillcolor="rgba(255,255,255,0)",
-       line={'color': 'rgb(18,99,168)'},
+       line={'color': 'blue'},
        connectgaps=True,
        showlegend=True,
     error_y=dict(
@@ -1242,7 +1253,7 @@ def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetit
 
        #line_color="rgba(255,255,255,0)",
        fillcolor="rgba(255,255,255,0)",
-       line={'color': 'rgb(18,99,168)'},
+       line={'color': 'red'},
        connectgaps=True,
        showlegend=True,
     error_y=dict(
@@ -1254,6 +1265,7 @@ def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetit
     ),
     marker=dict(color='red', size=8)
 ))
+
     dr0 = ""
     if len(r0) > 1:
         dr0 += f"+/- {np.std(r0)}"

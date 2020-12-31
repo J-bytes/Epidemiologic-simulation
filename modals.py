@@ -56,13 +56,29 @@ def modals_language() :
                         build_modal_info_overlay(
                             "model",
                             "bottom",
-                           _(
-
-                    "This dropdown menu allows for the selection of  a model to generate the space in which walker \
+                           _(dedent(
+                    """
+                    This dropdown menu allows for the selection of  a model to generate the space in which walker \
                     will be set free. This model can take the form of a simple cartesian grid or can be made from \
-                    a more complex model, for example a small-world network"
-
-                            ),
+                    a more complex model, for example a small-world network. 
+                    
+                    The following options are available :
+                    
+                        - Small-world (connected watts-strogatz) : Using the networkx module with the connected watts-strogatz generator, it
+                        connects in a circle every nodes with its C closest neigbours. After, it goes over each connection (a.k.a edges), and 
+                        randomly reconnect one end of the connection with probability P.
+                        
+                        - Small-world ( watts-strogatz) : Similar to connected watts-strogatz, except the rewiring algorithm varies a bit. Please
+                         see https://networkx.org/documentation/networkx-1.9/reference/generated/networkx.generators.random_graphs.watts_strogatz_graph.html
+                         for more details
+                         
+                        -2D-Grid : The space is generated as to represent a cartesian grid, with each nodes being connected to its four adjacent neighbours.
+                        
+                        -Power law : The connections are randomly made between the nodes by iterating over eah one of them, but the number of connection per node
+                        grows smaller and is dictated by a power law .
+                    
+                    """
+                            )),
                         ),
                         build_modal_info_overlay(
                             "connectivity",
