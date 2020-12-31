@@ -15,11 +15,11 @@ from dash.dependencies import Input, Output
 import dash_table
 from flask_babel import _ ,Babel
 from flask import session, redirect, url_for
-from flask import request, Response
-import os
+from flask import Response
+
 import numpy as np
 
-from prerequisite import small_world_power_law, watts_strogatz,personne#,grid_graph#!!!!! add grid_graph generator to prerequisite
+
 from plague import epidemic
 import  networkx as nx
 import plotly.graph_objects as go
@@ -908,6 +908,20 @@ def build_stats():
                     className="pretty_container",
                     ),
             ]),
+
+        html.Div([
+            html.Div(
+                [
+                    html.Div([
+                        html.P(
+                            "Credits : Jonathan Beaulieu-Emond")
+                    ]),
+
+                ],
+
+               
+            ),
+        ]),
 
         html.Div(id='none', children=[], style={'display': 'none'}), # Placeholder element to trigger translations upon page load
         ])
