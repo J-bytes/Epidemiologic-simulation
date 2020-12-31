@@ -199,7 +199,7 @@ def epidemic(M,N,n_sick_original,max_iter,duree,maps,repetition, liste_sick,list
         rliste=np.array(rliste)
         r0.append(np.mean(rliste[np.where(rliste!=0)]))
   
-    return r0
+    return r0,walkers
 
 
 
@@ -227,7 +227,7 @@ if __name__ == '__main__':
 
         liste_sick,liste_health,liste_dead=np.zeros((n_repetition,max_iter)),np.zeros((n_repetition,max_iter)),np.zeros((n_repetition,max_iter))
     
-        r0=epidemic(M,N,n_sick_original,max_iter,L,maps,n_iterate, liste_sick,liste_health,liste_dead,P_infection,P_mortality)
+        r0,walkers=epidemic(M,N,n_sick_original,max_iter,L,maps,n_iterate, liste_sick,liste_health,liste_dead,P_infection,P_mortality)
        
         print(r0)
             

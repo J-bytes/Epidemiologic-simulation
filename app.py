@@ -15,8 +15,8 @@ from dash.dependencies import Input, Output
 import dash_table
 from flask_babel import _ ,Babel
 from flask import session, redirect, url_for
-
-
+from flask import request, Response
+import os
 import numpy as np
 
 from prerequisite import small_world_power_law, watts_strogatz,personne#,grid_graph#!!!!! add grid_graph generator to prerequisite
@@ -76,6 +76,9 @@ model_options = [
 #--------------------------------------------------------
 #Advanced feature control
 #!!!! Modifying those three element will require manual changes in grid_init,which is located inside plague.py
+
+global walkers,liste_dead,liste_sick,liste_health
+walkers, liste_dead, liste_sick, liste_health=[],[],[],[]
 params_table = [
     'infectiosity', 'movements', 'mortality','proportion of population'
 ]
@@ -148,13 +151,15 @@ def build_header():
                 html.Div(
                     [
                         html.A(
-                            html.Button( _("Learn more about covid"), className="dash_button"),
+                            html.Button( _("Learn more about this app"), className="dash_button"),
                             href="",id='learn-more-link'
                         ),
                         html.A(
                             html.Button('FR', id='language-button', className="dash_button"),
                             href='/language/fr', id='language-link'
                         ),
+
+
                     ],
                     className="four columns",
                     id="button-div",
@@ -877,6 +882,15 @@ def build_stats():
                     id="vizChartContainer",
                     className="pretty_container",
                     ),
+
+            html.A(
+                html.Button(_('Download data as csv'), className="dash_button"),
+                href='/dash/downloadCSV'
+            ),
+            html.A(
+                html.Button(_('Download walkers data as csv'), className="dash_button"),
+                href='/dash/downloadCSV2'
+            ),
             ]),
 
 
@@ -1043,7 +1057,7 @@ def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetit
         A string that will be showned under the table to explain if a parameter has an unexpected value
     """
 
-    
+    global walkers,liste_dead,liste_sick,liste_health
     #formatting basic parameter------------------------------
     P/=10
     C=int(0.3*C/10*N)#!!!!!!
@@ -1137,9 +1151,9 @@ def make_viz_chart(model,P,C,N,P_infection,P_mortality,n_sick_original,M,repetit
 
     liste_sick,liste_health,liste_dead=np.zeros((repetition,max_iter)),np.zeros((repetition,max_iter)),np.zeros((repetition,max_iter))
     if "True" in advanced_switch :
-        r0=epidemic(M,N,n_sick_original,max_iter,duree,maps,repetition,liste_sick,liste_health,liste_dead,P_infection,P_mortality,df,columns,advanced_feature,adherence)
+        r0,walkers=epidemic(M,N,n_sick_original,max_iter,duree,maps,repetition,liste_sick,liste_health,liste_dead,P_infection,P_mortality,df,columns,advanced_feature,adherence)
     else :
-        r0=epidemic(M,N,n_sick_original,max_iter,duree,maps,repetition,liste_sick,liste_health,liste_dead,P_infection,P_mortality)
+        r0,walkers=epidemic(M,N,n_sick_original,max_iter,duree,maps,repetition,liste_sick,liste_health,liste_dead,P_infection,P_mortality)
     
 
     #limit the range of iteration-------------------------------------
@@ -1275,9 +1289,9 @@ def update_language_button(x):
 
     language = session['language']
     if language == 'fr':
-        return 'EN', prefixe+'/language/en','' #! Le code est bizarre et fait l'inverse. à mettre pour update le lien
+        return 'EN', prefixe+'/language/en','https://github.com/J-bytes/Epidemiologic-simulation/' #! Le code est bizarre et fait l'inverse. à mettre pour update le lien
     else:
-        return 'FR', prefixe+'/language/fr',''
+        return 'FR', prefixe+'/language/fr','https://github.com/J-bytes/Epidemiologic-simulation/'
 
 
 @babel.localeselector
@@ -1302,6 +1316,40 @@ def set_language(language=None):
     return redirect(url_for('/'))
 
 
+
+@app.server.route('/dash/downloadCSV')
+def download_csv():
+    global walkers, liste_dead, liste_sick, liste_health
+
+
+    dff = pd.DataFrame({"n_dead" : liste_dead[0,:],"n_sick" : liste_sick[0,:],"n_healthy" : liste_health[0,:]})
+    csv = dff.to_csv(index=False)
+
+    return Response(
+        csv,
+        mimetype="text/csv",
+        headers={
+            "Content-disposition": "attachment; filename=rcom_data.csv"
+        }
+    )
+
+
+@app.server.route('/dash/downloadCSV2')
+def download_csv2():
+    global walkers, liste_dead, liste_sick, liste_health
+    columns = ['x', 'lifespan', 'number', 'P_infection', 'P_mortality', 'status', 'age', 'P_movements',
+               'advanced_feature']
+    df2=pd.DataFrame([{fn: getattr(f, fn) for fn in columns} for f in walkers])
+
+
+    csv2=df2.to_csv(index=False)
+    return Response(
+        csv2,
+        mimetype="text/csv",
+        headers={
+            "Content-disposition": "attachment; filename=rcom_data.csv"
+        }
+    )
 
 
 
