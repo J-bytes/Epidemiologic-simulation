@@ -54,7 +54,7 @@ prefixe=""
 
 app = dash.Dash(__name__,meta_tags=[{"name": "viewport", "content": "width=device-width"}],external_stylesheets=external_stylesheets,external_scripts=external_scripts,)
 server = app.server
-server.config['SECRET_KEY'] = '78b81502f7e89045fe634e85d02f42c5'  # Setting up secret key to access flask session
+server.config['SECRET_KEY'] = '7887syfds98hfs7hr3bibr7f'  # Setting up secret key to access flask session
 babel = Babel(server)  # Hook flask-babel to the app
 
 
